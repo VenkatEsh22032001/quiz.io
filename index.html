@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        body{
+            background-color: greenyellow;
+        }
+        .app{
+            background: #fff;
+            width: 90%;
+            max-width: 600px;
+            margin: 100px auto 0;
+            border-radius: 10px;
+            padding: 30px;
+        }
+        .app h1{
+            font-size: 25px;
+            color: #001e4d;
+            font-weight: 600;
+            border-bottom: 3px solid #333;
+            padding-bottom: 30px;
+        }
+        .quiz{
+            padding: 20px 0;
+        }
+        .quiz h2{
+            font-size: 18px;
+            color: #001e4d;
+            font-weight: 600;
+        }
+        .btn{
+            background: #fff;
+            color: #222;
+            font-weight: 500;
+            border: 1px solid #222;
+            padding: 10px;
+            width: 100%;
+            margin: 10px 0;
+            text-align: left;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover:not([disabled]){
+            background: #222;
+            color: #fff;
+        }
+        .btn:disabled{
+            cursor:no-drop;
+        }
+        #next-btn{
+            background: #001e4d;
+            color: #fff;
+            font-weight: 500;
+            width: 150px;
+            border: 0;
+            padding: 10px;
+            margin: 20px auto 0;
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+        }
+        .correct{
+            background: #9aeabc;
+        }
+        .incorrect{
+            background: #ff9393;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <h1>General Knowledge Quiz</h1>
+        <div class="quiz">
+            <h2 id="question">question goes here</h2>
+            <div id="answer-buttons">
+                <button class="btn">Answer 1</button>
+                <button class="btn">Answer 2</button>
+                <button class="btn">Answer 3</button>
+                <button class="btn">Answer 4</button>
+            </div>
+            <button id="next-btn">Next</button>
+        </div>
+    </div>
+    <script>
+        const questions = [
+            {
+                question:"Which is largest animal in the world?",
+                answers:[
+                    {text:"Shark",correct:false},
+                    {text:"Blue Whale",correct:true},
+                    {text:"Elephant",correct:false},
+                    {text:"Giraffee",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Afghanistan?",
+                answers:[
+                    {text:"Andorra la Vella",correct:false},
+                    {text:"Luanda",correct:false},
+                    {text:"Saint John's",correct:false},
+                    {text:"kabul",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Niger?",
+                answers:[
+                    {text:"Managua",correct:false},
+                    {text:"Oslo",correct:false},
+                    {text:"Niamey",correct:true},
+                    {text:"Skopje",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Finland?",
+                answers:[
+                    {text:"Suva",correct:false},
+                    {text:"Libreville",correct:false},
+                    {text:"Accra",correct:false},
+                    {text:"Helsinki",correct:true},
+                ]   
+            },
+            { 
+                question:"Which is the capital of Portugal?",
+                answers:[
+                    {text:"Lisbon",correct:true},
+                    {text:"Warsaw",correct:false},
+                    {text:"Manila",correct:false},
+                    {text:"Panama City",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Albania?",
+                answers:[
+                    {text:"Algiers",correct:false},
+                    {text:"Kabul",correct:false},
+                    {text:"Tirana",correct:true},
+                    {text:"Baku",correct:false},
+                ]     
+            },
+            {
+                question:"Which is the capital of Algeria?",
+                answers:[
+                    {text:"Algiers",correct:true},
+                    {text:"Kabul",correct:false},
+                    {text:"Tirana",correct:false},
+                    {text:"Baku",correct:false},
+                ]    
+            },
+            {
+                question:"Which is the capital of Andorra?",
+                answers:[
+                    {text:"Luanda",correct:false},
+                    {text:"Andorra la Vella",correct:true},
+                    {text:"Vienna",correct:false},
+                    {text:"Canberra",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Angola?",
+                answers:[
+                    {text:"Saint John's",correct:false},
+                    {text:"Andorra la Vella",correct:false},
+                    {text:"Vienna",correct:false},
+                    {text:"Luanda",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Antigua and Barbuda?",
+                answers:[
+                    {text:"Saint John's",correct:true},
+                    {text:"Buenos Aires",correct:false},
+                    {text:"Yerevan",correct:false},
+                    {text:"Tirana",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Argentina?",
+                answers:[
+                    {text:"Baku",correct:false},
+                    {text:"Buenos Aires",correct:true},
+                    {text:"Algiers",correct:false},
+                    {text:"Kabul",correct:false},
+                ]     
+            },
+            {
+                question:"Which is the capital of Armenia?",
+                answers:[
+                    {text:"Canberra",correct:false},
+                    {text:"Buenos Aires",correct:false},
+                    {text:"Yerevan",correct:true},
+                    {text:"Kabul",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Australia?",
+                answers:[
+                    {text:"Canberra",correct:true},
+                    {text:"Buenos Aires",correct:false},
+                    {text:"Yerevan",correct:false},
+                    {text:"Kabul",correct:false},
+                ]    
+            },
+            {
+                question:"Which is the capital of Austria?",
+                answers:[
+                    {text:"Canberra",correct:false},
+                    {text:"Buenos Aires",correct:false},
+                    {text:"Vienna",correct:true},
+                    {text:"Baku",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Azerbaijan?",
+                answers:[
+                    {text:"Saint John's",correct:false},
+                    {text:"Tirana",correct:false},
+                    {text:"Andorra la Vella",correct:false},
+                    {text:"Baku",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Bahamas?",
+                answers:[
+                    {text:"Nassau",correct:true},
+                    {text:"Manama",correct:false},
+                    {text:"Dhaka",correct:false},
+                    {text:"Bridgetown",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Bahrain?",
+                answers:[
+                    {text:"Nassau",correct:false},
+                    {text:"Manama",correct:true},
+                    {text:"Dhaka",correct:false},
+                    {text:"Bridgetown",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Bangladesh?",
+                answers:[
+                    {text:"Nassau",correct:false},
+                    {text:"Manama",correct:false},
+                    {text:"Dhaka",correct:true},
+                    {text:"Bridgetown",correct:false},
+                ]     
+            },
+            {
+                question:"Which is the capital of Barbados?",
+                answers:[
+                    {text:"Nassau",correct:false},
+                    {text:"Manama",correct:false},
+                    {text:"Dhaka",correct:false},
+                    {text:"Bridgetown",correct:true},
+                ]        
+            },
+            {
+                question:"Which is the capital of Belarus?",
+                answers:[
+                    {text:"Brussels",correct:false},
+                    {text:"Dhaka",correct:false},
+                    {text:"Minsk",correct:true},
+                    {text:"Porto-Novo",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Belgium?",
+                answers:[
+                    {text:"Brussels",correct:true},
+                    {text:"Belmopan",correct:false},
+                    {text:"Minsk",correct:false},
+                    {text:"Thimphu",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Belize?",
+                answers:[
+                    {text:"Brussels",correct:false},
+                    {text:"Belmopan",correct:true},
+                    {text:"Minsk",correct:false},
+                    {text:"Thimphu",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Benin?",
+                answers:[
+                    {text:"Belmopan",correct:false},
+                    {text:"Porto-Novo",correct:true},
+                    {text:"Minsk",correct:false},
+                    {text:"Thimphu",correct:false},
+                ]    
+            },
+            {
+                question:"Which is the capital of Bhutan?",
+                answers:[
+                    {text:"Belmopan",correct:false},
+                    {text:"Porto-Novo",correct:false},
+                    {text:"Minsk",correct:false},
+                    {text:"Thimphu",correct:true},
+                ]  
+            },
+            {
+                question:"Which is the capital of Bolivia?",
+                answers:[
+                    {text:"Sucre,La Paz(seat of government)",correct:true},
+                    {text:"Sarajevo",correct:false},
+                    {text:"Minsk",correct:false},
+                    {text:"Sofia",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Bosnia and Herzegovina?",
+                answers:[
+                    {text:"Sucre,La Paz(seat of government)",correct:false},
+                    {text:"Sarajevo",correct:true},
+                    {text:"Brasilia",correct:false},
+                    {text:"Sofia",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Botswana?",
+                answers:[
+                    {text:"Gaborone",correct:true},
+                    {text:"Sarajevo",correct:false},
+                    {text:"Brasilia",correct:false},
+                    {text:"Sofia",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Brazil?",
+                answers:[
+                    {text:"Gaborone",correct:false},
+                    {text:"Sarajevo",correct:false},
+                    {text:"Brasilia",correct:true},
+                    {text:"Sofia",correct:false},
+                ]    
+            },
+            {
+                question:"Which is the capital of Brunei?",
+                answers:[
+                    {text:"Gaborone",correct:false},
+                    {text:"Sarajevo",correct:false},
+                    {text:"Brasilia",correct:false},
+                    {text:"Bandar Seri Begawan",correct:true},
+                ]      
+            },
+            {
+                question:"Which is the capital of Bulgaria?",
+                answers:[
+                    {text:"Gaborone",correct:false},
+                    {text:"Sarajevo",correct:false},
+                    {text:"Sofia",correct:true},
+                    {text:"Bandar Seri Begawan",correct:false},
+                ]        
+            },
+            {
+                question:"Which is the capital of Burkina Faso?",
+                answers:[
+                    {text:"Gaborone",correct:false},
+                    {text:"Sarajevo",correct:false},
+                    {text:"Ouagadougou",correct:true},
+                    {text:"Bandar Seri Begawan",correct:false},
+                ]        
+            },
+            {
+                question:"Which is the capital of Burundi?",
+                answers:[
+                    {text:"Burundi",correct:false},
+                    {text:"Sarajevo",correct:false},
+                    {text:"Gitega",correct:true},
+                    {text:"Bandar Seri Begawan",correct:false},
+                ]        
+            },
+            {
+                question:"Which is the capital of Cabo Verde?",
+                answers:[
+                    {text:"Yaounde",correct:false},
+                    {text:"Praia",correct:true},
+                    {text:"Ottawa",correct:false},
+                    {text:"Phnom Penh",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Cambodia?",
+                answers:[
+                    {text:"Yaounde",correct:false},
+                    {text:"Praia",correct:false},
+                    {text:"Ottawa",correct:false},
+                    {text:"Phnom Penh",correct:true},
+                ]   
+            },
+            {
+                question:"Which is the capital of Cameroon?",
+                answers:[
+                    {text:"Yaounde",correct:true},
+                    {text:"Praia",correct:false},
+                    {text:"Ottawa",correct:false},
+                    {text:"Phnom Penh",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Canada?",
+                answers:[
+                    {text:"Yaounde",correct:false},
+                    {text:"Praia",correct:false},
+                    {text:"Ottawa",correct:true},
+                    {text:"Phnom Penh",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Central African Republic?",
+                answers:[
+                    {text:"N'Djamena",correct:false},
+                    {text:"Praia",correct:false},
+                    {text:"Bangui",correct:true},
+                    {text:"Phnom Penh",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Chad?",
+                answers:[
+                    {text:"N'Djamena",correct:true},
+                    {text:"Praia",correct:false},
+                    {text:"Bangui",correct:false},
+                    {text:"Phnom Penh",correct:false},
+                ]    
+            },
+            {
+                question:"Which is the capital of Chile?",
+                answers:[
+                    {text:"N'Djamena",correct:false},
+                    {text:"Praia",correct:false},
+                    {text:"Bangui",correct:false},
+                    {text:"Santiago",correct:true},
+                ]  
+            },
+            {
+                question:"Which is the capital of China?",
+                answers:[
+                    {text:"N'Djamena",correct:false},
+                    {text:"Praia",correct:false},
+                    {text:"Beijing",correct:true},
+                    {text:"Santiago",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Colombia?",
+                answers:[
+                    {text:"Bogota",correct:true},
+                    {text:"Praia",correct:false},
+                    {text:"Zagreb",correct:false},
+                    {text:"Nicosia",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Comoros?",
+                answers:[
+                    {text:"Bogota",correct:false},
+                    {text:"Moroni",correct:true},
+                    {text:"Zagreb",correct:false},
+                    {text:"Nicosia",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Congo, Democratic Republic of the?",
+                answers:[
+                    {text:"Havana",correct:false},
+                    {text:"Brazaville",correct:false},
+                    {text:"Kinshasa",correct:true},
+                    {text:"Nicosia",correct:false},
+                ]    
+            },
+            {
+                question:"Which is the capital of Congo, Republic of the?",
+                answers:[
+                    {text:"Havana",correct:false},
+                    {text:"Brazzaville",correct:true},
+                    {text:"Kinshasa",correct:false},
+                    {text:"Nicosia",correct:false},
+                ]    
+            },
+            {
+                question:"Which is the capital of Costa Rica?",
+                answers:[
+                    {text:"San Jose",correct:true},
+                    {text:"Brazzaville",correct:false},
+                    {text:"Kinshasa",correct:false},
+                    {text:"Nicosia",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Cote d'Ivoire?",
+                answers:[
+                    {text:"San Jose",correct:false},
+                    {text:"Yamoussoukro",correct:true},
+                    {text:"Kinshasa",correct:false},
+                    {text:"Nicosia",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Croatia?",
+                answers:[
+                    {text:"San Jose",correct:false},
+                    {text:"Yamoussoukro",correct:false},
+                    {text:"Zagreb",correct:true},
+                    {text:"Havana",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Cuba?",
+                answers:[
+                    {text:"San Jose",correct:false},
+                    {text:"Yamoussoukro",correct:false},
+                    {text:"Havana",correct:true},
+                    {text:"Zagreb",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Cyprus?",
+                answers:[
+                    {text:"San Jose",correct:false},
+                    {text:"Nicosia",correct:true},
+                    {text:"Havana",correct:false},
+                    {text:"Zagreb",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Czechia?",
+                answers:[
+                    {text:"Prague",correct:true},
+                    {text:"Nicosia",correct:false},
+                    {text:"Havana",correct:false},
+                    {text:"Zagreb",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Denmark?",
+                answers:[
+                    {text:"Copenhagen",correct:true},
+                    {text:"Roseau",correct:false},
+                    {text:"Santo Domingo",correct:false},
+                    {text:"Zagreb",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Djibouti?",
+                answers:[
+                    {text:"Copenhagen",correct:false},
+                    {text:"Roseau",correct:false},
+                    {text:"Santo Domingo",correct:false},
+                    {text:"Djibouti (city)",correct:true},
+                ] 
+            },
+            {
+                question:"Which is the capital of Dominica?",
+                answers:[
+                    {text:"Copenhagen",correct:false},
+                    {text:"Roseau",correct:true},
+                    {text:"Santo Domingo",correct:false},
+                    {text:"Djibouti (city)",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Dominican Republic?",
+                answers:[
+                    {text:"Copenhagen",correct:false},
+                    {text:"Roseau",correct:false},
+                    {text:"Santo Domingo",correct:true},
+                    {text:"Djibouti (city)",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Ecuador?",
+                answers:[
+                    {text:"Cario",correct:false},
+                    {text:"San Salvador",correct:false},
+                    {text:"Quito",correct:true},
+                    {text:"Asmara",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Egypt?",
+                answers:[
+                    {text:"Cario",correct:true},
+                    {text:"San Salvador",correct:false},
+                    {text:"Quito",correct:false},
+                    {text:"Tallin",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of El Salvador?",
+                answers:[
+                    {text:"Cario",correct:false},
+                    {text:"San Salvador",correct:true},
+                    {text:"Quito",correct:false},
+                    {text:"Tallin",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Equatorial Guinea?", 
+                answers:[
+                    {text:"Cario",correct:false},
+                    {text:"Malabo (de jure),Oyala (seat of government)",correct:true},
+                    {text:"Quito",correct:false},
+                    {text:"Tallin",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Eritrea?", 
+                answers:[
+                    {text:"Cario",correct:false},
+                    {text:"Malabo (de jure),Oyala (seat of government)",correct:false},
+                    {text:"Quito",correct:false},
+                    {text:"Asmara",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Estonia?", 
+                answers:[
+                    {text:"Cario",correct:false},
+                    {text:"Malabo (de jure),Oyala (seat of government)",correct:false},
+                    {text:"Tallin",correct:true},
+                    {text:"Asmara",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Ethiopia?", 
+                answers:[
+                    {text:"Cario",correct:false},
+                    {text:"Addis Ababa",correct:true},
+                    {text:"Tallin",correct:false},
+                    {text:"Asmara",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Fiji?", 
+                answers:[
+                    {text:"Cario",correct:false},
+                    {text:"Addis Ababa",correct:false},
+                    {text:"Suva",correct:true},
+                    {text:"Asmara",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Finland?", 
+                answers:[
+                    {text:"Helsiniki",correct:true},
+                    {text:"Addis Ababa",correct:false}, 
+                    {text:"Suva",correct:false},
+                    {text:"Asmara",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of France?", 
+                answers:[
+                    {text:"Helsiniki",correct:false},
+                    {text:"Addis Ababa",correct:false}, 
+                    {text:"Suva",correct:false},
+                    {text:"Paris",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Gabon?", 
+                answers:[
+                    {text:"Berlin",correct:false},
+                    {text:"Tbilisi",correct:false}, 
+                    {text:"Banjul",correct:false},
+                    {text:"Libreville",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Gambia?", 
+                answers:[
+                    {text:"Berlin",correct:false},
+                    {text:"Tbilisi",correct:false}, 
+                    {text:"Banjul",correct:true},
+                    {text:"Libreville",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Germany?", 
+                answers:[
+                    {text:"Berlin",correct:true},
+                    {text:"Tbilisi",correct:false}, 
+                    {text:"Banjul",correct:false},
+                    {text:"Libreville",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Ghana?", 
+                answers:[
+                    {text:"Berlin",correct:false},
+                    {text:"Tbilisi",correct:false}, 
+                    {text:"Accra",correct:true},
+                    {text:"Libreville",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Greece?", 
+                answers:[
+                    {text:"Tbilisi",correct:false},
+                    {text:"Accra",correct:false}, 
+                    {text:"Athens",correct:true},
+                    {text:"Libreville",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Georgia?", 
+                answers:[
+                    {text:"Tbilisi",correct:true},
+                    {text:"Accra",correct:false}, 
+                    {text:"Athens",correct:false},
+                    {text:"Libreville",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Grenada?", 
+                answers:[
+                    {text:"Tbilisi",correct:false},
+                    {text:"Saint George's",correct:true}, 
+                    {text:"Athens",correct:false},
+                    {text:"Libreville",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Guatemala?", 
+                answers:[
+                    {text:"Guatemala City",correct:true},
+                    {text:"Saint George's",correct:false}, 
+                    {text:"Athens",correct:false},
+                    {text:"Libreville",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Guinea?", 
+                answers:[
+                    {text:"Guatemala City",correct:false},
+                    {text:"Conakry",correct:true}, 
+                    {text:"Athens",correct:false},
+                    {text:"Libreville",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Guinea-Bissau?", 
+                answers:[
+                    {text:"Bissau",correct:true},
+                    {text:"Conakry",correct:false}, 
+                    {text:"Athens",correct:false},
+                    {text:"Libreville",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Guyana?", 
+                answers:[
+                    {text:"Georgetown",correct:true},
+                    {text:"Conakry",correct:false}, 
+                    {text:"Athens",correct:false},
+                    {text:"Banjul",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Haiti?", 
+                answers:[
+                    {text:"Georgetown",correct:false},
+                    {text:"Conakry",correct:false}, 
+                    {text:"Port-au-Prince",correct:true},
+                    {text:"Banjul",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Honduras?", 
+                answers:[
+                    {text:"Tegucigalpa",correct:true},
+                    {text:"Conakry",correct:false}, 
+                    {text:"Port-au-Prince",correct:false},
+                    {text:"Banjul",correct:false},
+                ]    
+            },
+            {
+                question:"Which is the capital of Hungary?", 
+                answers:[
+                    {text:"Tegucigalpa",correct:false},
+                    {text:"Budapest",correct:true}, 
+                    {text:"Port-au-Prince",correct:false},
+                    {text:"Banjul",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Iceland?", 
+                answers:[
+                    {text:"Reykjavik",correct:true},
+                    {text:"Budapest",correct:false}, 
+                    {text:"Port-au-Prince",correct:false},
+                    {text:"Banjul",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of India?", 
+                answers:[
+                    {text:"Reykjavik",correct:false},
+                    {text:"New Delhi",correct:true}, 
+                    {text:"Port-au-Prince",correct:false},
+                    {text:"Jakarta",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Indonesia?", 
+                answers:[
+                    {text:"Reykjavik",correct:false},
+                    {text:"New Delhi",correct:false}, 
+                    {text:"Jakarta",correct:true},
+                    {text:"Banjul",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Iran?", 
+                answers:[
+                    {text:"Reykjavik",correct:false},
+                    {text:"Tehran",correct:true}, 
+                    {text:"Jakarta",correct:false},
+                    {text:"Baghdad",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Iraq?", 
+                answers:[
+                    {text:"Reykjavik",correct:false},
+                    {text:"Tehran",correct:false}, 
+                    {text:"Jakarta",correct:false},
+                    {text:"Baghdad",correct:true},
+                ]  
+            },
+            {
+                question:"Which is the capital of Ireland?", 
+                answers:[
+                    {text:"Dublin",correct:true},
+                    {text:"Tehran",correct:false}, 
+                    {text:"Jakarta",correct:false},
+                    {text:"Baghdad",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Israel?", 
+                answers:[
+                    {text:"Dublin",correct:false},
+                    {text:"Tehran",correct:false}, 
+                    {text:"Jerusalem",correct:true},
+                    {text:"Baghdad",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Italy?", 
+                answers:[
+                    {text:"Dublin",correct:false},
+                    {text:"Rome",correct:true}, 
+                    {text:"Jerusalem",correct:false},
+                    {text:"Baghdad",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Jamaica?", 
+                answers:[
+                    {text:"Dublin",correct:false},
+                    {text:"Rome",correct:false}, 
+                    {text:"Jerusalem",correct:false},
+                    {text:"Kingston",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Japan?", 
+                answers:[
+                    {text:"Dublin",correct:false},
+                    {text:"Tokyo",correct:true}, 
+                    {text:"Jerusalem",correct:false},
+                    {text:"Kingston",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Jordan?", 
+                answers:[
+                    {text:"Amman",correct:true},
+                    {text:"Tokyo",correct:false}, 
+                    {text:"Jerusalem",correct:false},
+                    {text:"Kingston",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Kazakhstan?", 
+                answers:[
+                    {text:"Amman",correct:false},
+                    {text:"Tokyo",correct:false}, 
+                    {text:"Astana",correct:true},
+                    {text:"Kingston",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Kenya?", 
+                answers:[
+                    {text:"Amman",correct:false},
+                    {text:"Nairobi",correct:true}, 
+                    {text:"Astana",correct:false},
+                    {text:"Kingston",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Kiribati?", 
+                answers:[
+                    {text:"Amman",correct:false},
+                    {text:"Nairobi",correct:false}, 
+                    {text:"Astana",correct:false},
+                    {text:"Tarawa",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Kosovo?", 
+                answers:[
+                    {text:"Amman",correct:false},
+                    {text:"Nairobi",correct:false}, 
+                    {text:"Pristina",correct:true},
+                    {text:"Tarawa",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Kuwait?", 
+                answers:[
+                    {text:"Kuwait City",correct:true},
+                    {text:"Nairobi",correct:false}, 
+                    {text:"Pristina",correct:false},
+                    {text:"Tarawa",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of kyrgyzstan?", 
+                answers:[
+                    {text:"Kuwait City",correct:false},
+                    {text:"Nairobi",correct:false}, 
+                    {text:"Pristina",correct:false},
+                    {text:"Bishkek",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Laos?", 
+                answers:[
+                    {text:"Kuwait City",correct:false},
+                    {text:"Nairobi",correct:false}, 
+                    {text:"Vientiane",correct:true},
+                    {text:"Bishkek",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Latvia?", 
+                answers:[
+                    {text:"Riga",correct:true},
+                    {text:"Nairobi",correct:false}, 
+                    {text:"Vientiane",correct:false},
+                    {text:"Bishkek",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Lebanon?", 
+                answers:[
+                    {text:"Riga",correct:false},
+                    {text:"Beirut",correct:true}, 
+                    {text:"Vientiane",correct:false},
+                    {text:"Bishkek",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Lesotho?", 
+                answers:[
+                    {text:"Riga",correct:false},
+                    {text:"Beirut",correct:false}, 
+                    {text:"Vientiane",correct:false},
+                    {text:"Maseru",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Liberia?", 
+                answers:[
+                    {text:"Monrovia",correct:true},
+                    {text:"Beirut",correct:false}, 
+                    {text:"Vientiane",correct:false},
+                    {text:"Maseru",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Libya?", 
+                answers:[
+                    {text:"Monrovia",correct:false},
+                    {text:"Beirut",correct:false}, 
+                    {text:"Tripoli",correct:true},
+                    {text:"Maseru",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Liechtenstein?", 
+                answers:[
+                    {text:"Monrovia",correct:false},
+                    {text:"Vaduz",correct:true}, 
+                    {text:"Tripoli",correct:false},
+                    {text:"Maseru",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Lithuania?", 
+                answers:[
+                    {text:"Monrovia",correct:false},
+                    {text:"Vaduz",correct:false}, 
+                    {text:"Tripoli",correct:false},
+                    {text:"Vilnius",correct:true},
+                ] 
+            },
+            {
+                question:"Which is the capital of Luxembourg?", 
+                answers:[
+                    {text:"Monrovia",correct:false},
+                    {text:"Vaduz",correct:false}, 
+                    {text:"Luxembourg(city)",correct:true},
+                    {text:"Vilnius",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Madagascar?", 
+                answers:[
+                    {text:"Antananarivo",correct:true},
+                    {text:"Vaduz",correct:false}, 
+                    {text:"Luxembourg(city)",correct:false},
+                    {text:"Vilnius",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Malawi?", 
+                answers:[
+                    {text:"Antananarivo",correct:false},
+                    {text:"Vaduz",correct:false}, 
+                    {text:"Lilongwe",correct:true},
+                    {text:"Vilnius",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Malaysia?", 
+                answers:[
+                    {text:"Antananarivo",correct:false},
+                    {text:"Vaduz",correct:false}, 
+                    {text:"Lilongwe",correct:false},
+                    {text:"Kuala Lumpur",correct:true},
+                ]  
+            },
+            {
+                question:"Which is the capital of Maldives?", 
+                answers:[
+                    {text:"Male",correct:true},
+                    {text:"Vaduz",correct:false}, 
+                    {text:"Lilongwe",correct:false},
+                    {text:"Kuala Lumpur",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Mali?", 
+                answers:[
+                    {text:"Male",correct:false},
+                    {text:"Bamako",correct:true}, 
+                    {text:"Lilongwe",correct:false},
+                    {text:"Kuala Lumpur",correct:false},
+                ]    
+            },
+            {
+                question:"Which is the capital of Malta?", 
+                answers:[
+                    {text:"Male",correct:false},
+                    {text:"Bamako",correct:false}, 
+                    {text:"Lilongwe",correct:false},
+                    {text:"Valleta",correct:true},
+                ]   
+            },
+            {
+                question:"Which is the capital of Marshall Islands?", 
+                answers:[
+                    {text:"Male",correct:false},
+                    {text:"Bamako",correct:false}, 
+                    {text:"Majuro",correct:true},
+                    {text:"Valleta",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Mauritania?", 
+                answers:[
+                    {text:"Nauokchott",correct:true},
+                    {text:"Bamako",correct:false}, 
+                    {text:"Majuro",correct:false},
+                    {text:"Valleta",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Mexico?", 
+                answers:[
+                    {text:"Nauokchott",correct:false},
+                    {text:"Bamako",correct:false}, 
+                    {text:"Mexico City",correct:true},
+                    {text:"Valleta",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Micronesia?", 
+                answers:[
+                    {text:"Nauokchott",correct:false},
+                    {text:"Palikir",correct:true}, 
+                    {text:"Mexico City",correct:false},
+                    {text:"Valleta",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Moldova?", 
+                answers:[
+                    {text:"Nauokchott",correct:false},
+                    {text:"Palikir",correct:false}, 
+                    {text:"Mexico City",correct:false},
+                    {text:"Chisinau",correct:true},
+                ]  
+            },
+            {
+                question:"Which is the capital of Monaco?", 
+                answers:[
+                    {text:"Nauokchott",correct:false},
+                    {text:"Palikir",correct:false}, 
+                    {text:"Monaco",correct:true},
+                    {text:"Chisinau",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Mongolia?", 
+                answers:[
+                    {text:"Ulaanbaatar",correct:true},
+                    {text:"Palikir",correct:false}, 
+                    {text:"Monaco",correct:false},
+                    {text:"Chisinau",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Montenegro?", 
+                answers:[
+                    {text:"Ulaanbaatar",correct:false},
+                    {text:"Podgorica",correct:true}, 
+                    {text:"Monaco",correct:false},
+                    {text:"Chisinau",correct:false},
+                ]    
+            },
+            {
+                question:"Which is the capital of Morocco?", 
+                answers:[
+                    {text:"Ulaanbaatar",correct:false},
+                    {text:"Podgorica",correct:false}, 
+                    {text:"Rabat",correct:true},
+                    {text:"Chisinau",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Mozambique?", 
+                answers:[
+                    {text:"Ulaanbaatar",correct:false},
+                    {text:"Podgorica",correct:false}, 
+                    {text:"Rabat",correct:false},
+                    {text:"Maputo",correct:true},
+                ]  
+            },
+            {
+                question:"Which is the capital of Myanmar?", 
+                answers:[
+                    {text:"Ulaanbaatar",correct:false},
+                    {text:"Podgorica",correct:false}, 
+                    {text:"Rabat",correct:false},
+                    {text:"Naypyidaw",correct:true},
+                ]  
+            },
+            {
+                question:"Which is the capital of Namibia?", 
+                answers:[
+                    {text:"Windhoek",correct:true},
+                    {text:"Podgorica",correct:false}, 
+                    {text:"Rabat",correct:false},
+                    {text:"Naypyidaw",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Nauru?", 
+                answers:[
+                    {text:"Windhoek",correct:false},
+                    {text:"Podgorica",correct:false}, 
+                    {text:"Yaren District (de facto)",correct:true},
+                    {text:"Naypyidaw",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Nepal?", 
+                answers:[
+                    {text:"Windhoek",correct:false},
+                    {text:"Kathmandu",correct:true}, 
+                    {text:"Yaren District (de facto)",correct:false},
+                    {text:"Naypyidaw",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Netherlands?", 
+                answers:[
+                    {text:"Windhoek",correct:false},
+                    {text:"Kathmandu",correct:false}, 
+                    {text:"Amsterdam",correct:true},
+                    {text:"Naypyidaw",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of New Zealand?", 
+                answers:[
+                    {text:"Windhoek",correct:false},
+                    {text:"Kathmandu",correct:false}, 
+                    {text:"Amsterdam",correct:false},
+                    {text:"Wellington",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Nicaragua?", 
+                answers:[
+                    {text:"Managua",correct:true},
+                    {text:"Kathmandu",correct:false}, 
+                    {text:"Amsterdam",correct:false},
+                    {text:"Wellington",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Niger?", 
+                answers:[
+                    {text:"Managua",correct:false},
+                    {text:"Niamey",correct:true}, 
+                    {text:"Amsterdam",correct:false},
+                    {text:"Wellington",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Nigeria?", 
+                answers:[
+                    {text:"Managua",correct:false},
+                    {text:"Niamey",correct:false}, 
+                    {text:"Abuja",correct:true},
+                    {text:"Wellington",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of North Korea?", 
+                answers:[
+                    {text:"Managua",correct:false},
+                    {text:"Niamey",correct:false}, 
+                    {text:"Abuja",correct:false},
+                    {text:"Pyongyang",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of North Macedonia?", 
+                answers:[
+                    {text:"Skopje",correct:true},
+                    {text:"Niamey",correct:false}, 
+                    {text:"Abuja",correct:false},
+                    {text:"Pyongyang",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Norway?", 
+                answers:[
+                    {text:"Skopje",correct:false},
+                    {text:"Oslo",correct:true}, 
+                    {text:"Abuja",correct:false},
+                    {text:"Pyongyang",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Oman?", 
+                answers:[
+                    {text:"Skopje",correct:false},
+                    {text:"Oslo",correct:false}, 
+                    {text:"Abuja",correct:false},
+                    {text:"Muscat",correct:true},
+                ] 
+            },
+            {
+                question:"Which is the capital of Pakistan?", 
+                answers:[
+                    {text:"Islamabad",correct:true},
+                    {text:"Oslo",correct:false}, 
+                    {text:"Abuja",correct:false},
+                    {text:"Muscat",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Palau?", 
+                answers:[
+                    {text:"Islamabad",correct:false},
+                    {text:"Ngerulmud",correct:true}, 
+                    {text:"Abuja",correct:false},
+                    {text:"Muscat",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Palestine?", 
+                answers:[
+                    {text:"Islamabad",correct:false},
+                    {text:"Ngerulmud",correct:false}, 
+                    {text:"Jerusalem(east)",correct:true},
+                    {text:"Muscat",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Panama?", 
+                answers:[
+                    {text:"Islamabad",correct:false},
+                    {text:"Ngerulmud",correct:false}, 
+                    {text:"Jerusalem(east)",correct:false},
+                    {text:"Panama City",correct:true},
+                ]  
+            },
+            {
+                question:"Which is the capital of Papua New Guinea?", 
+                answers:[
+                    {text:"Port Moresby",correct:true},
+                    {text:"Ngerulmud",correct:false}, 
+                    {text:"Jerusalem(east)",correct:false},
+                    {text:"Panama City",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Paraguay?", 
+                answers:[
+                    {text:"Port Moresby",correct:false},
+                    {text:"Ngerulmud",correct:false}, 
+                    {text:"Asuncion",correct:true},
+                    {text:"Panama City",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Peru?", 
+                answers:[
+                    {text:"Port Moresby",correct:false},
+                    {text:"Lima",correct:true}, 
+                    {text:"Asuncion",correct:false},
+                    {text:"Panama City",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Philippines?", 
+                answers:[
+                    {text:"Port Moresby",correct:false},
+                    {text:"Lima",correct:false}, 
+                    {text:"Asuncion",correct:false},
+                    {text:"Manila",correct:true},
+                ]  
+            },
+            {
+                question:"Which is the capital of Poland?", 
+                answers:[
+                    {text:"Warsaw",correct:true},
+                    {text:"Lima",correct:false}, 
+                    {text:"Asuncion",correct:false},
+                    {text:"Manila",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Portugal?", 
+                answers:[
+                    {text:"Warsaw",correct:false},
+                    {text:"Lima",correct:false}, 
+                    {text:"Lisbon",correct:true},
+                    {text:"Manila",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Qatar?", 
+                answers:[
+                    {text:"Warsaw",correct:false},
+                    {text:"Doha",correct:true}, 
+                    {text:"Lisbon",correct:false},
+                    {text:"Manila",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Romania?", 
+                answers:[
+                    {text:"Bucharest",correct:true},
+                    {text:"Doha",correct:false}, 
+                    {text:"Lisbon",correct:false},
+                    {text:"Manila",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Russia?", 
+                answers:[
+                    {text:"Moscow",correct:true},
+                    {text:"Doha",correct:false}, 
+                    {text:"Lisbon",correct:false},
+                    {text:"Manila",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Rwanda?", 
+                answers:[
+                    {text:"Moscow",correct:false},
+                    {text:"Kigali",correct:true}, 
+                    {text:"Lisbon",correct:false},
+                    {text:"Manila",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Saint Kitts and Nevis?", 
+                answers:[
+                    {text:"Castries",correct:false},
+                    {text:"Basseterre",correct:true}, 
+                    {text:"Lisbon",correct:false},
+                    {text:"Manila",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Saint Lucia?", 
+                answers:[
+                    {text:"Castries",correct:true},
+                    {text:"Basseterre",correct:false}, 
+                    {text:"Lisbon",correct:false},
+                    {text:"Manila",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Saint Vincent and the Grenadines?", 
+                answers:[
+                    {text:"Castries",correct:false},
+                    {text:"Basseterre",correct:false}, 
+                    {text:"Lisbon",correct:false},
+                    {text:"Kingstown",correct:true},
+                ] 
+            },
+            {
+                question:"Which is the capital of Samoa?", 
+                answers:[
+                    {text:"Castries",correct:false},
+                    {text:"Basseterre",correct:false}, 
+                    {text:"Apia",correct:true},
+                    {text:"Kingstown",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of San Marino?", 
+                answers:[
+                    {text:"San Marino",correct:true},
+                    {text:"Basseterre",correct:false}, 
+                    {text:"Apia",correct:false},
+                    {text:"Kingstown",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Sao Tome and Principe?", 
+                answers:[
+                    {text:"San Marino",correct:false},
+                    {text:"São Tomé",correct:true}, 
+                    {text:"Apia",correct:false},
+                    {text:"Kingstown",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Saudi Arabia?", 
+                answers:[
+                    {text:"San Marino",correct:false},
+                    {text:"São Tomé",correct:false}, 
+                    {text:"Apia",correct:false},
+                    {text:"Riyadh",correct:true},
+                ] 
+            },
+            {
+                question:"Which is the capital of Senegal?", 
+                answers:[
+                    {text:"Dakar",correct:true},
+                    {text:"São Tomé",correct:false}, 
+                    {text:"Apia",correct:false},
+                    {text:"Riyadh",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Serbia?", 
+                answers:[
+                    {text:"Dakar",correct:false},
+                    {text:"Belgrade",correct:true}, 
+                    {text:"Apia",correct:false},
+                    {text:"Riyadh",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Seychelles?", 
+                answers:[
+                    {text:"Dakar",correct:false},
+                    {text:"Belgrade",correct:false}, 
+                    {text:"Victoria",correct:true},
+                    {text:"Riyadh",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Sierra Leone?", 
+                answers:[
+                    {text:"Dakar",correct:false},
+                    {text:"Freetown",correct:true}, 
+                    {text:"Victoria",correct:false},
+                    {text:"Riyadh",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Singapore?", 
+                answers:[
+                    {text:"Dakar",correct:false},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Singapore",correct:true},
+                    {text:"Riyadh",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Slovakia?", 
+                answers:[
+                    {text:"Dakar",correct:false},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Singapore",correct:false},
+                    {text:"Bratislava",correct:true},
+                ]  
+            },
+            {
+                question:"Which is the capital of Slovenia?", 
+                answers:[
+                    {text:"Ljubljana",correct:true},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Singapore",correct:false},
+                    {text:"Bratislava",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Solomon Islands?", 
+                answers:[
+                    {text:"Honiara",correct:true},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Singapore",correct:false},
+                    {text:"Bratislava",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Somalia?", 
+                answers:[
+                    {text:"Honiara",correct:false},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Singapore",correct:false},
+                    {text:"Mogadishu",correct:true},
+                ] 
+            },
+            {
+                question:"Which is the capital of South Africa?", 
+                answers:[
+                    {text:"Honiara",correct:false},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Pretoria(administrative),Cape Town(legislative),Bloemfontein(judicial)",correct:true},
+                    {text:"Mogadishu",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of South Korea?", 
+                answers:[
+                    {text:"Honiara",correct:false},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Seoul",correct:true},
+                    {text:"Mogadishu",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of South Sudan?", 
+                answers:[
+                    {text:"Honiara",correct:false},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Seoul",correct:false},
+                    {text:"Juba",correct:true},
+                ] 
+            },
+            {
+                question:"Which is the capital of Spain?", 
+                answers:[
+                    {text:"Madrid",correct:true},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Seoul",correct:false},
+                    {text:"Juba",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Sri Lanka?", 
+                answers:[
+                    {text:"Madrid",correct:false},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Sri Jayawardenepura Kotte",correct:true},
+                    {text:"Juba",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Sudan?", 
+                answers:[
+                    {text:"Madrid",correct:false},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Sri Jayawardenepura Kotte",correct:false},
+                    {text:"Khartoum",correct:true},
+                ]  
+            },
+            {
+                question:"Which is the capital of Suriname?", 
+                answers:[
+                    {text:"Madrid",correct:false},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Paramaribo",correct:true},
+                    {text:"Khartoum",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Sweden?", 
+                answers:[
+                    {text:"Stockholm",correct:true},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Paramaribo",correct:false},
+                    {text:"Khartoum",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Switzerland?", 
+                answers:[
+                    {text:"Stockholm",correct:false},
+                    {text:"Freetown",correct:false}, 
+                    {text:"Paramaribo",correct:false},
+                    {text:"Bern",correct:true},
+                ] 
+            },
+            {
+                question:"Which is the capital of Syria?", 
+                answers:[
+                    {text:"Stockholm",correct:false},
+                    {text:"Damascus",correct:true}, 
+                    {text:"Paramaribo",correct:false},
+                    {text:"Bern",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Syria?", 
+                answers:[
+                    {text:"Stockholm",correct:false},
+                    {text:"Damascus",correct:true}, 
+                    {text:"Paramaribo",correct:false},
+                    {text:"Bern",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Taiwan?", 
+                answers:[
+                    {text:"Stockholm",correct:false},
+                    {text:"Damascus",correct:false}, 
+                    {text:"Taipei",correct:true},
+                    {text:"Bern",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Tajikistan?", 
+                answers:[
+                    {text:"Dushanbe",correct:true},
+                    {text:"Damascus",correct:false}, 
+                    {text:"Taipei",correct:false},
+                    {text:"Bern",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Tanzania?", 
+                answers:[
+                    {text:"Dushanbe",correct:false},
+                    {text:"Damascus",correct:false}, 
+                    {text:"Dodoma",correct:true},
+                    {text:"Bern",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Thailand?", 
+                answers:[
+                    {text:"Dushanbe",correct:false},
+                    {text:"Damascus",correct:false}, 
+                    {text:"Dodoma",correct:false},
+                    {text:"Bangkok",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Timor-Leste?", 
+                answers:[
+                    {text:"Dili",correct:true},
+                    {text:"Damascus",correct:false}, 
+                    {text:"Dodoma",correct:false},
+                    {text:"Bangkok",correct:false},
+                ]
+            },
+            {
+                question:"Which is the capital of Togo?", 
+                answers:[
+                    {text:"Dili",correct:false},
+                    {text:"Lomé",correct:true}, 
+                    {text:"Dodoma",correct:false},
+                    {text:"Bangkok",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Tonga?", 
+                answers:[
+                    {text:"Dili",correct:false},
+                    {text:"Lomé",correct:false}, 
+                    {text:"Nukuʻalofa",correct:true},
+                    {text:"Bangkok",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Trinidad and Tobago?", 
+                answers:[
+                    {text:"Dili",correct:false},
+                    {text:"Lomé",correct:false}, 
+                    {text:"Nukuʻalofa",correct:false},
+                    {text:"Port of Spain",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Tunisia?", 
+                answers:[
+                    {text:"Dili",correct:false},
+                    {text:"Lomé",correct:false}, 
+                    {text:"Nukuʻalofa",correct:false},
+                    {text:"Tunis",correct:true},
+                ]
+            },
+            {
+                question:"Which is the capital of Turkey?", 
+                answers:[
+                    {text:"Ankara",correct:true},
+                    {text:"Lomé",correct:false}, 
+                    {text:"Nukuʻalofa",correct:false},
+                    {text:"Tunis",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Turkmenistan?", 
+                answers:[
+                    {text:"Ankara",correct:false},
+                    {text:"Ashgabat",correct:true}, 
+                    {text:"Nukuʻalofa",correct:false},
+                    {text:"Tunis",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Tuvalu?", 
+                answers:[
+                    {text:"Ankara",correct:false},
+                    {text:"Ashgabat",correct:false}, 
+                    {text:"Funafuti",correct:true},
+                    {text:"Tunis",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Uganda?", 
+                answers:[
+                    {text:"Ankara",correct:false},
+                    {text:"Ashgabat",correct:false}, 
+                    {text:"Funafuti",correct:false},
+                    {text:"Kampala",correct:true},
+                ]  
+            },
+            {
+                question:"Which is the capital of Ukraine?", 
+                answers:[
+                    {text:"Ankara",correct:false},
+                    {text:"Kyiv (also known as Kiev)",correct:true}, 
+                    {text:"Funafuti",correct:false},
+                    {text:"Kampala",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of United Arab Emirates?", 
+                answers:[
+                    {text:"Ankara",correct:false},
+                    {text:"Kyiv (also known as Kiev)",correct:false}, 
+                    {text:"Funafuti",correct:false},
+                    {text:"Abu Dhabi",correct:true},
+                ] 
+            },
+            {
+                question:"Which is the capital of United Kingdom?", 
+                answers:[
+                    {text:"London",correct:true},
+                    {text:"Kyiv (also known as Kiev)",correct:false}, 
+                    {text:"Funafuti",correct:false},
+                    {text:"Abu Dhabi",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of United States of America?", 
+                answers:[
+                    {text:"London",correct:false},
+                    {text:"Washington, D.C.",correct:true}, 
+                    {text:"Funafuti",correct:false},
+                    {text:"Abu Dhabi",correct:false},
+                ]  
+            },
+            {
+                question:"Which is the capital of Uruguay?", 
+                answers:[
+                    {text:"London",correct:false},
+                    {text:"Washington, D.C.",correct:false}, 
+                    {text:"Montevideo",correct:true},
+                    {text:"Abu Dhabi",correct:false},
+                ]    
+            },
+            {
+                question:"Which is the capital of Uzbekistan?", 
+                answers:[
+                    {text:"London",correct:false},
+                    {text:"Washington, D.C.",correct:false}, 
+                    {text:"Montevideo",correct:false},
+                    {text:"Tashkent",correct:true},
+                ]  
+            },
+            {
+                question:"Which is the capital of Vanuata?", 
+                answers:[
+                    {text:"Port Vila",correct:true},
+                    {text:"Washington, D.C.",correct:false}, 
+                    {text:"Montevideo",correct:false},
+                    {text:"Tashkent",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Vatican City (Holy See)?", 
+                answers:[
+                    {text:"Port Vila",correct:false},
+                    {text:"Washington, D.C.",correct:false}, 
+                    {text:"Vatican City",correct:true},
+                    {text:"Tashkent",correct:false},
+                ]   
+            },
+            {
+                question:"Which is the capital of Venezuela?", 
+                answers:[
+                    {text:"Port Vila",correct:false},
+                    {text:"Washington, D.C.",correct:false}, 
+                    {text:"Vatican City",correct:false},
+                    {text:"Caracus",correct:true},
+                ]   
+            },
+            {
+                question:"Which is the capital of Vietnam?", 
+                answers:[
+                    {text:"Port Vila",correct:false},
+                    {text:"Hanoi",correct:true}, 
+                    {text:"Vatican City",correct:false},
+                    {text:"Caracus",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Yemen?", 
+                answers:[
+                    {text:"Sana's",correct:true},
+                    {text:"Hanoi",correct:false}, 
+                    {text:"Vatican City",correct:false},
+                    {text:"Caracus",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Zambia?", 
+                answers:[
+                    {text:"Sana's",correct:false},
+                    {text:"Hanoi",correct:false}, 
+                    {text:"Lusaka",correct:true},
+                    {text:"Caracus",correct:false},
+                ] 
+            },
+            {
+                question:"Which is the capital of Zimbabwe?", 
+                answers:[
+                    {text:"Sana's",correct:false},
+                    {text:"Harare",correct:true}, 
+                    {text:"Lusaka",correct:false},
+                    {text:"Caracus",correct:false},
+                ]  
+            }
+
+        ];
+
+        const questionElement = document.getElementById("question");
+        const answerButtons = document.getElementById("answer-buttons");
+        const nextButton = document.getElementById("next-btn");
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+
+        function startQuiz(){
+            currentQuestionIndex = 0;
+            score = 0;
+            nextButton.innerHTML = "Next";
+            showQuestion();
+        }
+
+        function showQuestion(){
+            resetState();
+            let currentQuestion = questions[currentQuestionIndex];
+            let questionNo = currentQuestionIndex + 1;
+            questionElement.innerHTML = questionNo + ". " +  currentQuestion.question;
+
+            currentQuestion.answers.forEach(answer=>{
+                const button = document.createElement("button");
+                button.innerHTML = answer.text;
+                button.classList.add('btn');
+                answerButtons.appendChild(button); 
+                if(answer.correct){
+                    button.dataset.correct = answer.correct;
+                }  
+                button.addEventListener("click",selectAnswer);
+            });
+        }
+
+        function resetState(){
+            nextButton.style.display="none";
+            while(answerButtons.firstChild){
+                answerButtons.removeChild(answerButtons.firstChild)
+            };
+        }
+
+        function selectAnswer(e){
+            const selectedBtn = e.target;
+            const isCorrect = selectedBtn.dataset.correct === "true";
+            if(isCorrect){
+                selectedBtn.classList.add("correct");
+                score++;
+            }else{
+                selectedBtn.classList.add("incorrect");
+            }
+            Array.from(answerButtons.children).forEach(button=>{
+                if(button.dataset.correct === "true"){
+                    button.classList.add("correct");
+                }
+                button.disabled = true;
+            });
+            nextButton.style.display = "block"; 
+        }
+
+        function showScore(){
+            resetState();
+            questionElement.innerHTML = `you scored ${score} out of ${questions.length}!`;
+            nextButton.innerHTML = 'Play Again';
+            nextButton.style.display="block";
+        }
+
+        function handleNextButton(){
+            currentQuestionIndex++;
+            if(currentQuestionIndex < questions.length){
+                showQuestion();
+            }else{
+                showScore();
+            }
+        }
+
+        nextButton.addEventListener("click",()=>{
+            if(currentQuestionIndex < questions.length){
+                handleNextButton();
+            }else{
+                startQuiz();
+            }
+        })
+
+        startQuiz();    
+    </script>
+</body>
+</html>
